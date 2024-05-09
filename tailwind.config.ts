@@ -1,20 +1,32 @@
+/** @type {import('tailwindcss').Config} */
 import type { Config } from "tailwindcss";
+// import flowbite from "flowbite/plugin";
+
+import flowbite from "flowbite-react/tailwind";
 
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{ts,tsx}",
+    "./node_modules/flowbite-react/lib/**/*.js",
+    flowbite.content(),
+
   ],
   theme: {
     extend: {
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        'portada': "url('/images/portadas/feria_Huancaro_portada.webp')", // Asegúrate de reemplazar '/ruta/a/tu/imagen.jpg' con la ruta real a tu imagen
+
+
       },
+      colors:{
+        'primary': '#9e0c26', 
+        'secondary': '#654321', 
+    
+      }
     },
   },
-  plugins: [],
+  plugins: [flowbite.plugin()],
 };
 export default config;
