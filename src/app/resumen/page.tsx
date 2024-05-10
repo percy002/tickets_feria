@@ -4,7 +4,7 @@ import ModalFB from "@/components/UI/ModalFB";
 import { useGlobalState } from "@/contexts/GlobalStateContext";
 import { Button } from "flowbite-react";
 
-const page = () => {
+const Page = () => {
   const {userData,setUserData,generalTickets,starTickets} = useGlobalState();
  
   return (
@@ -79,4 +79,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default Page;
