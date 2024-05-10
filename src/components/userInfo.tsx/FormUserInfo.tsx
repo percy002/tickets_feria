@@ -1,12 +1,23 @@
+'use client'
+
 import { Label, Select, TextInput } from "flowbite-react";
 import ButtonFB from "../UI/ButtonFB";
 import Link from "next/link";
+import { useGlobalState } from "@/contexts/GlobalStateContext";
 
 const FormUserInfo = () => {
+  const { userData, setUserData } = useGlobalState();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserData({
+      ...userData,
+      [event.target.id]: event.target.value,
+    });
+  };
   return (
-    <form className="flex max-w-md flex-col gap-4">
-      <div className="flex gap-4">
-        <div>
+    <form className="flex flex-col gap-4">
+      <div className="flex gap-4 w-full">
+        <div className="flex-1">
           <div className="mb-2 block">
             <Label htmlFor="name" value="Nombres" />
           </div>
@@ -14,11 +25,12 @@ const FormUserInfo = () => {
             id="name"
             type="text"
             placeholder="Nombres"
-            value={"Juan"}
+            value={userData.name || ''}
+            onChange={handleChange}
             required
           />
         </div>
-        <div>
+        <div className="flex-1">
           <div className="mb-2 block">
             <Label htmlFor="lastName" value="Apellidos" />
           </div>
@@ -26,7 +38,8 @@ const FormUserInfo = () => {
             id="lastName"
             type="text"
             placeholder="Apellidos"
-            value={"Perez"}
+            value={userData.lastName || ''}
+            onChange={handleChange}
             required
           />
         </div>
@@ -40,7 +53,8 @@ const FormUserInfo = () => {
           id="email"
           type="email"
           placeholder="Correo Electrónico"
-          value={"juan_perez@gmail.com"}
+          value={userData.email || ''}
+          onChange={handleChange}
           required
         />
       </div>
@@ -52,22 +66,37 @@ const FormUserInfo = () => {
           id="emailConfirm"
           type="email"
           placeholder="Confirme Correo Electrónico"
-          value={"juan_perez@gmail.com"}
+          value={userData.emailConfirm || ''}
+          onChange={handleChange}
           required
         />
       </div>
       <div className="flex gap-4">
-        <div>
+        <div className="flex-1">
           <div className="mb-2 block">
             <Label htmlFor="dni" value="Dni" />
           </div>
-          <TextInput id="dni" type="text" placeholder="Dni" value={12345678} required />
+          <TextInput
+            id="dni"
+            type="text"
+            placeholder="Dni"
+            value={userData.dni}
+            onChange={handleChange}
+            required
+          />
         </div>
-        <div>
+        <div className="flex-1">
           <div className="mb-2 block">
             <Label htmlFor="phone" value="Celular" />
           </div>
-          <TextInput id="phone" type="tel" placeholder="Celular" value={124578963} required />
+          <TextInput
+            id="phone"
+            type="tel"
+            placeholder="Celular"
+            value={userData.phone}
+            onChange={handleChange}
+            required
+          />
         </div>
       </div>
 

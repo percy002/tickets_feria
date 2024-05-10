@@ -32,7 +32,7 @@ export default function RootLayout({
               <div className="flex-1 hidden md:block">
                 <img
                   src="/images/ganador_feria_2.jpg"
-                  alt="imagen feria de huancaro"
+                  alt="imagen feria de Huancaro"
                   className="w-full rounded-3xl"
                 />
               </div>

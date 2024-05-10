@@ -4,29 +4,32 @@ import { HiInformationCircle } from "react-icons/hi";
 import ButtonFB from "../UI/ButtonFB";
 import Link from "next/link";
 import { useState } from "react";
+import { useGlobalState } from "@/contexts/GlobalStateContext";
 
 const PurchaseTicketView = () => {
-  const [generalTicketTotal, setGeneralTicketTotal] = useState(0);
-  const [presentationTicketTotal, setPresentationTicketTotal] = useState(0);
+  // const [generalTicketTotal, setGeneralTicketTotal] = useState(0);
+  // const [presentationTicketTotal, setPresentationTicketTotal] = useState(0);
+  const { generalTickets, setGeneralTickets } = useGlobalState();
+  const {starTickets, setStarTickets} = useGlobalState();
 
   const incrementGeneralTickets = () => {
-    if (generalTicketTotal < 10) {
-      setGeneralTicketTotal(generalTicketTotal + 1);
+    if (generalTickets < 10) {
+      setGeneralTickets(generalTickets + 1);
     }
   };
   const decrementGeneralTickets = () => {
-    if (generalTicketTotal > 0) {
-      setGeneralTicketTotal(generalTicketTotal - 1);
+    if (generalTickets > 0) {
+      setGeneralTickets(generalTickets - 1);
     }
   };
   const incrementPresentationTickets = () => {
-    if (presentationTicketTotal < 10) {
-      setPresentationTicketTotal(presentationTicketTotal + 1);
+    if (starTickets < 10) {
+      setStarTickets(starTickets + 1);
     }
   };
   const decrementPresentationTickets = () => {
-    if (presentationTicketTotal > 0) {
-      setPresentationTicketTotal(presentationTicketTotal - 1);
+    if (starTickets > 0) {
+      setStarTickets(starTickets - 1);
     }
   };
   return (
@@ -49,7 +52,7 @@ const PurchaseTicketView = () => {
             <span className="text-gray-600 font-bold">s/. 10.00</span>
             <div className="flex gap-8 bg-white border border-black rounded-2xl px-8 text-2xl font-bold">
               <button onClick={decrementGeneralTickets}>-</button>
-              <span>{generalTicketTotal}</span>
+              <span>{generalTickets}</span>
               <button onClick={incrementGeneralTickets}>+</button>
             </div>
           </div>
@@ -63,14 +66,14 @@ const PurchaseTicketView = () => {
             <span className="text-gray-600 font-bold">s/. 30.00</span>
             <div className="flex gap-8 bg-white border border-black rounded-2xl px-8 text-2xl font-bold">
               <button onClick={decrementPresentationTickets}>-</button>
-              <span>{presentationTicketTotal}</span>
+              <span>{starTickets}</span>
               <button onClick={incrementPresentationTickets}>+</button>
             </div>
           </div>
         </div>
       </div>
       <div className="flex justify-end">
-        <span className="font-bold text-xl">Total : S/. {generalTicketTotal * 10 + presentationTicketTotal * 30}</span>
+        <span className="font-bold text-xl">Total : S/. {generalTickets * 10 + starTickets * 30}</span>
         
       </div>
       <div className="flex items-center gap-2">

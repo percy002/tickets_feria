@@ -9,7 +9,7 @@ const HeaderContent = () => {
               className="w-36 md:w-64 object-contain"
             />
             <img
-              src="images/logos/logo_feria_huancaro.png"
+              src="images/logos/logo_expoferia_2024.png"
               alt="logo gobierno regional del cusco"
               className="w-36 md:w-64 object-contain"
             />
