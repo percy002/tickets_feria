@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main>
-      <div className="bg-portada w-screen h-screen bg-center bg-cover">
+      <div className="bg-portada w-full h-screen bg-center bg-cover">
         <div className="flex flex-col justify-between py-8 h-4/6">
           <div className="w-full flex justify-between px-8">
             <img

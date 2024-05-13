@@ -2,7 +2,10 @@
 
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
+import { redirect } from "next/navigation";
+
 import Image from "next/image";
+import Link from "next/link";
 export default function ModalFB() {
   const [openModal, setOpenModal] = useState(false);
   const [yapeData, setYapeData] = useState();
@@ -15,6 +18,7 @@ export default function ModalFB() {
   //   };
   const handleClickYape = () => {
     setOpenModal(false);
+    // redirect('/boleto')
   };
   return (
     <>
@@ -31,9 +35,9 @@ export default function ModalFB() {
         onClose={() => setOpenModal(false)}
       >
         <Modal.Body>
-            <div className="flex justify-center my-4">
-                <img src="/images/logos/logo_yape.png" alt="logo yape" />
-            </div>
+          <div className="flex justify-center my-4">
+            <img src="/images/logos/logo_yape.png" alt="logo yape" />
+          </div>
           <form className="flex flex-col gap-4">
             <div>
               <div className="mb-2 block">
@@ -53,7 +57,7 @@ export default function ModalFB() {
                   className="text-xl font-bold text-gray-600"
                 />
               </div>
-              <TextInput id="confirmationCode" type="password" required />
+              <TextInput id="confirmationCode" type="text" required />
             </div>
           </form>
           <div className="mt-6">
@@ -62,13 +66,15 @@ export default function ModalFB() {
             </span>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={handleClickYape}
-            className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full"
-          >
-            <span className="text-2xl">YAPEAR</span>
-          </Button>
+        <Modal.Footer className="justify-center">
+          <Link href={"/boleto"}>
+            <Button
+              onClick={() => setOpenModal(false)}
+              className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full"
+            >
+              <span className="text-2xl">YAPEAR</span>
+            </Button>
+          </Link>
         </Modal.Footer>
       </Modal>
     </>

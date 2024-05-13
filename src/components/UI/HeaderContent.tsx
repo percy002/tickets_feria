@@ -1,6 +1,6 @@
 const HeaderContent = () => {
   return (
-    <div className="bg-portada w-screen bg-top bg-cover">
+    <div className="bg-portada w-full bg-top bg-cover">
         <div className="flex flex-col py-8 h-4/6">
           <div className="w-full flex justify-around px-8">
             <img

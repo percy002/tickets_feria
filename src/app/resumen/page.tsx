@@ -5,7 +5,7 @@ import { useGlobalState } from "@/contexts/GlobalStateContext";
 import { Button } from "flowbite-react";
 
 const Page = () => {
-  const {userData,setUserData,generalTickets,starTickets} = useGlobalState();
+  const {userData,generalTickets,starTickets} = useGlobalState();
  
   return (
     <div>
