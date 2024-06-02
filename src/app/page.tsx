@@ -1,7 +1,6 @@
 "use client";
 import { Alert, Button } from "flowbite-react";
 
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -16,7 +15,7 @@ export default function Home() {
               className="w-36 md:w-48 object-contain"
             />
             <img
-              src="images/logos/logo_feria_huancaro.png"
+              src="images/logos/logo_expoferia_2024.png"
               alt="logo gobierno regional del cusco"
               className="w-36 md:w-52 object-contain"
             />

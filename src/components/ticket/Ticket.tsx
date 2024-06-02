@@ -4,9 +4,15 @@ import { Button } from "flowbite-react";
 import ReactPDF, { PDFDownloadLink } from "@react-pdf/renderer";
 import TicketPDF from "../pdf/TicketPDF";
 import ModalTicket from "./ModalTicket";
+import { useEffect, useState } from "react";
 
 const Ticket = () => {
   const { userData, generalTickets, starTickets } = useGlobalState();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <div className="w-full">
@@ -109,18 +115,29 @@ const Ticket = () => {
         </div>
       </div>
       <div className="mt-6">
-        <ModalTicket/>
-        <PDFDownloadLink document={<TicketPDF userData={userData} generalTickets={generalTickets} startTickets = {starTickets}/>} fileName="ticket.pdf">
-          {({ blob, url, loading, error }) =>
-            loading ? (
-              "Cargando documento..."
-            ) : (
-              <Button className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full">
-                <span className="text-xl">Descargar Boleto</span>
-              </Button>
-            )
-          }
-        </PDFDownloadLink>
+        {/* <ModalTicket/> */}
+        {isClient && (
+          <PDFDownloadLink
+            document={
+              <TicketPDF
+                userData={userData}
+                generalTickets={generalTickets}
+                startTickets={starTickets}
+              />
+            }
+            fileName="ticket.pdf"
+          >
+            {({ blob, url, loading, error }) =>
+              loading ? (
+                "Cargando documento..."
+              ) : (
+                <Button className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full">
+                  <span className="text-xl">Descargar Boleto</span>
+                </Button>
+              )
+            }
+          </PDFDownloadLink>
+        )}
       </div>
     </div>
   );
