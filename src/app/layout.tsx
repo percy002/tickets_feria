@@ -31,7 +31,7 @@ export default function RootLayout({
             <div className="flex gap-8 items-center container mx-auto mt-4">
               <div className="flex-1 hidden md:block">
                 <img
-                  src="/images/ganador_feria_2.jpg"
+                  src="/images/promocion_huancaro w900.png"
                   alt="imagen feria de Huancaro"
                   className="w-full rounded-3xl"
                 />

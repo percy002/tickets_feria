@@ -2,34 +2,120 @@
 
 import { Button, Checkbox, Label, TextInput, Card } from "flowbite-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useState } from "react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export default function FormLogin() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const router = useRouter();
+
+  const login = async () => {
+    try{
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      const data = await response.json();
+  
+      if (!response.ok) {
+        const errors = Object.values(data.errors).flat().join("\n");
+        console.log(errors);
+
+        throw new Error(errors || "¡Algo salió mal!");        
+      }
+      // sessionStorage.setItem('token', data.token);
+      // sessionStorage.setItem('token_type', data.token_type);
+      Swal.fire({
+        title: "Bienvenido",
+        text: "Iniciaste sesión correctamente",
+        icon: "success",
+        timer: 1000,
+        showConfirmButton: false,
+      }).then(() => {
+        console.log(data);
+        router.push("/comprar_boleto");
+      });
+    } catch (error: any) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Ocurrió un error desconocido.";
+      Swal.fire("¡Error!", message, "error");
+    }
+  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    login();
+    console.log(formData);
+  };
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    // Expresión regular que excluye caracteres especiales
+    const regex = /^[a-zA-Z0-9@._-]*$/;
+
+    if (regex.test(value)) {
+      setFormData({
+        ...formData,
+        [e.target.id]: value,
+      });
+    }
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    // Expresión regular que coincide con los caracteres no deseados
+    const regex = /[^a-zA-Z0-9]/;
+
+    if (!regex.test(value)) {
+      setFormData({
+        ...formData,
+        [e.target.id]: value,
+      });
+    }
+  };
   return (
-    <form className="flex flex-col gap-4">
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="email1" value="Correo Electrónico" />
+    <div className="">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="email" value="Correo Electrónico" />
+          </div>
+          <TextInput
+            id="email"
+            type="email"
+            placeholder="Correo Electrónico"
+            
+            onChange={handleEmailChange}
+            value={formData.email}
+          />
         </div>
-        <TextInput
-          id="email1"
-          type="email"
-          placeholder="Correo Electrónico"
-          required
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="password1" value="Contraseña" />
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="password" value="Contraseña" />
+          </div>
+          <TextInput
+            id="password"
+            type="password"
+            
+            placeholder="Contraseña"
+            width={1}
+            value={formData.password}
+            onChange={handleInputChange}
+          />
         </div>
-        <TextInput
-          id="password1"
-          type="password"
-          required
-          placeholder="Contraseña"
-          width={1}
-        />
-      </div>
-      <Link href={"/compra_boleto"}>
         <Button
           type="submit"
           className="bg-primary rounded-3xl enabled:hover:bg-primary"
@@ -37,8 +123,8 @@ export default function FormLogin() {
         >
           <span className="font-bold text-2xl">Iniciar Sesión</span>
         </Button>
-      </Link>
-      <div className="flex text-primary justify-between w-full">
+      </form>
+      <div className="flex text-primary justify-between w-full mt-4">
         <Link href={"/registro"}>
           <p className="font-bold">Registrarme</p>
         </Link>
@@ -46,6 +132,6 @@ export default function FormLogin() {
           <p className="font-bold">Olvide mi contraseña</p>
         </Link>
       </div>
-    </form>
+    </div>
   );
 }
