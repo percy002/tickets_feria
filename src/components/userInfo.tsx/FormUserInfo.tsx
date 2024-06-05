@@ -4,15 +4,27 @@ import { Label, Select, TextInput } from "flowbite-react";
 import ButtonFB from "../UI/ButtonFB";
 import Link from "next/link";
 import { useGlobalState } from "@/contexts/GlobalStateContext";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 const FormUserInfo = () => {
-  const { userData, setUserData } = useGlobalState();
+  const Router = useRouter();
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    Router.replace('/');
+    return;
+    // throw new Error("AuthContext is undefined");
+  }
+  const { user, setUser } = authContext;
+
+  // const { userData, setUserData } = useGlobalState();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserData({
-      ...userData,
-      [event.target.id]: event.target.value,
-    });
+    // setUser({
+    //   ...user,
+    //   [event.target.id]: event.target.value,
+    // });
   };
   return (
     <form className="flex flex-col gap-4">
@@ -22,10 +34,10 @@ const FormUserInfo = () => {
             <Label htmlFor="name" value="Nombres" />
           </div>
           <TextInput
-            id="name"
+            id="nombres"
             type="text"
             placeholder="Nombres"
-            value={userData.name || ''}
+            value={user?.nombres || ''}
             onChange={handleChange}
             required
           />
@@ -38,7 +50,7 @@ const FormUserInfo = () => {
             id="lastName"
             type="text"
             placeholder="Apellidos"
-            value={userData.lastName || ''}
+            value={user?.apellido_paterno || ''}
             onChange={handleChange}
             required
           />
@@ -53,12 +65,12 @@ const FormUserInfo = () => {
           id="email"
           type="email"
           placeholder="Correo Electrónico"
-          value={userData.email || ''}
+          value={user?.email || ''}
           onChange={handleChange}
           required
         />
       </div>
-      <div>
+      {/* <div>
         <div className="mb-2 block">
           <Label htmlFor="email" value="Confirme su Correo Electrónico" />
         </div>
@@ -66,11 +78,11 @@ const FormUserInfo = () => {
           id="emailConfirm"
           type="email"
           placeholder="Confirme Correo Electrónico"
-          value={userData.emailConfirm || ''}
+          value={user.emailConfirm || ''}
           onChange={handleChange}
           required
         />
-      </div>
+      </div> */}
       <div className="flex gap-4">
         <div className="flex-1">
           <div className="mb-2 block">
@@ -80,7 +92,7 @@ const FormUserInfo = () => {
             id="dni"
             type="text"
             placeholder="Dni"
-            value={userData.dni}
+            value={user?.dni}
             onChange={handleChange}
             required
           />
@@ -93,7 +105,7 @@ const FormUserInfo = () => {
             id="phone"
             type="tel"
             placeholder="Celular"
-            value={userData.phone}
+            value={user?.celular}
             onChange={handleChange}
             required
           />

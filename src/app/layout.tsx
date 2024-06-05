@@ -6,6 +6,7 @@ import NavbarFB from "@/components/UI/NavbarFB";
 import HeaderContent from "@/components/UI/HeaderContent";
 import { usePathname } from "next/navigation";
 import { GlobalStateProvider } from "@/contexts/GlobalStateContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,26 +23,28 @@ export default function RootLayout({
   const pathname = usePathname();
 
   return (
-    <GlobalStateProvider>
-      <html lang="es" suppressHydrationWarning={true}>
-        <body className={inter.className}>
-          <NavbarFB />
-          {pathname !== "/" && <HeaderContent />}
-          {pathname !== "/" && (
-            <div className="flex gap-8 items-center container mx-auto mt-4">
-              <div className="flex-1 hidden md:block">
-                <img
-                  src="/images/promocion_huancaro w900.png"
-                  alt="imagen feria de Huancaro"
-                  className="w-full rounded-3xl"
-                />
+    <AuthProvider>
+      <GlobalStateProvider>
+        <html lang="es" suppressHydrationWarning={true}>
+          <body className={inter.className}>
+            <NavbarFB />
+            {pathname !== "/" && <HeaderContent />}
+            {pathname !== "/" && (
+              <div className="flex gap-8 items-center container mx-auto mt-4">
+                <div className="flex-1 hidden md:block">
+                  <img
+                    src="/images/promocion_huancaro w900.png"
+                    alt="imagen feria de Huancaro"
+                    className="w-full rounded-3xl"
+                  />
+                </div>
+                <div className="flex-1 h-fit">{children}</div>
               </div>
-              <div className="flex-1 h-fit">{children}</div>
-            </div>
-          )}
-          {pathname == "/" && children}
-        </body>
-      </html>
-    </GlobalStateProvider>
+            )}
+            {pathname == "/" && children}
+          </body>
+        </html>
+      </GlobalStateProvider>
+    </AuthProvider>
   );
 }

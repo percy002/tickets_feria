@@ -3,22 +3,31 @@
 import { Button, Checkbox, Label, TextInput, Card } from "flowbite-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useState,useContext } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-
+import { AuthContext } from "@/contexts/AuthContext";
 export default function FormLogin() {
+  const router = useRouter();
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    router.replace('/');
+    return;
+    // throw new Error("AuthContext is undefined");
+  }
+
+  const { user, setUser, loading } = authContext;
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const router = useRouter();
 
   const login = async () => {
     try{
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/login`,
+        `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/v1/login`,
         {
           method: "POST",
           headers: {
@@ -35,16 +44,19 @@ export default function FormLogin() {
 
         throw new Error(errors || "¡Algo salió mal!");        
       }
-      // sessionStorage.setItem('token', data.token);
-      // sessionStorage.setItem('token_type', data.token_type);
+      sessionStorage.setItem('access_token', data.token);
+      sessionStorage.setItem('token_type', data.token_type);
+      setUser(data.user);
+      console.log(user);
+      
       Swal.fire({
         title: "Bienvenido",
         text: "Iniciaste sesión correctamente",
         icon: "success",
-        timer: 1000,
-        showConfirmButton: false,
+        // timer: 1000,
+        showConfirmButton: true,
       }).then(() => {
-        console.log(data);
+        console.log(user);
         router.push("/comprar_boleto");
       });
     } catch (error: any) {

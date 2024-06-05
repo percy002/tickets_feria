@@ -4,9 +4,20 @@ import { Button } from "flowbite-react";
 import ReactPDF, { PDFDownloadLink } from "@react-pdf/renderer";
 import TicketPDF from "../pdf/TicketPDF";
 import ModalTicket from "./ModalTicket";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AuthContext } from "@/contexts/AuthContext";
 
 const Ticket = () => {
+  const Router = useRouter();
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    Router.replace("/");
+    return;
+    // throw new Error("AuthContext is undefined");
+  }
+  const { user, setUser } = authContext;
+  
   const { userData, generalTickets, starTickets } = useGlobalState();
   const [isClient, setIsClient] = useState(false);
 
@@ -42,25 +53,25 @@ const Ticket = () => {
           <div className="flex mt-4">
             <div className="flex-1 flex flex-col gap-2">
               <h6>Nombre</h6>
-              <span className="font-bold">{userData.name}</span>
+              <span className="font-bold">{user?.nombres}</span>
             </div>
             <div className="flex-1 flex flex-col gap-2">
               <h6>Apellidos</h6>
-              <span className="font-bold">{userData.lastName}</span>
+              <span className="font-bold">{user?.apellido_paterno} {user?.apellido_materno}</span>
             </div>
             <div className="flex-1 flex flex-col gap-2">
               <h6>Dni</h6>
-              <span className="font-bold">{userData.dni}</span>
+              <span className="font-bold">{user?.dni}</span>
             </div>
           </div>
-          <div className="flex justify-between mt-4 ">
+          <div className="flex flex-col xl:flex-row xl:justify-between mt-4 gap-y-4 ">
             <div className="flex flex-col">
-              <h6>Telefono</h6>
-              <span className="font-bold">{userData.phone}</span>
+              <h6>Celular</h6>
+              <span className="font-bold">{user?.celular}</span>
             </div>
             <div className="flex flex-col">
               <h6>Correo Electrónico</h6>
-              <span className="font-bold">{userData.email}</span>
+              <span className="font-bold">{user?.email}</span>
             </div>
           </div>
         </div>
@@ -120,7 +131,7 @@ const Ticket = () => {
           <PDFDownloadLink
             document={
               <TicketPDF
-                userData={userData}
+                userData={user}
                 generalTickets={generalTickets}
                 startTickets={starTickets}
               />

@@ -1,7 +1,7 @@
 'use client'
 import Ticket from "@/components/ticket/Ticket";
 import { Card } from "flowbite-react";
-
+import withAuth from "@/hoc/withAuth";
 const page = () => {
   return (
     <Card className="px-4">
@@ -9,4 +9,4 @@ const page = () => {
     </Card>
   );
 };
-export default page;
+export default withAuth(page);

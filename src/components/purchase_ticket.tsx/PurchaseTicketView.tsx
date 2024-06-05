@@ -13,6 +13,9 @@ const PurchaseTicketView = () => {
   const {starTickets, setStarTickets} = useGlobalState();
 
   const incrementGeneralTickets = () => {
+    
+    const savedCart = localStorage.getItem('generaTickets');
+    
     if (generalTickets < 10) {
       setGeneralTickets(generalTickets + 1);
     }

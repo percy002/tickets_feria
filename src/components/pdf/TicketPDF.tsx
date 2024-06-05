@@ -1,4 +1,5 @@
 import React from "react";
+import { User } from "@/contexts/AuthContext";
 import {
   Page,
   Text,
@@ -56,8 +57,9 @@ const styles = StyleSheet.create({
     width: "50%",
   },
 });
+
 interface Props {
-  userData: UserData;
+  userData: User|null;
   generalTickets: number;
   startTickets: number;
 }
@@ -84,25 +86,25 @@ const TicketPDF = ({ userData, generalTickets, startTickets }: Props) => (
         <View style={styles.dataUser}>
           <View>
             <Text style={styles.textBold}>Nombres</Text>
-            <Text>{userData.name}</Text>
+            <Text>{userData?.nombres}</Text>
           </View>
           <View>
             <Text style={styles.textBold}>Apellidos</Text>
-            <Text>{userData.lastName}</Text>
+            <Text>{userData?.apellido_paterno} {userData?.apellido_materno}</Text>
           </View>
           <View>
             <Text style={styles.textBold}>Dni</Text>
-            <Text>{userData.dni}</Text>
+            <Text>{userData?.dni}</Text>
           </View>
         </View>
         <View style={styles.dataUser}>
           <View>
             <Text style={styles.textBold}>Celular</Text>
-            <Text>{userData.phone}</Text>
+            <Text>{userData?.celular}</Text>
           </View>
           <View>
             <Text style={styles.textBold}>Correo Electrónico</Text>
-            <Text>{userData.email}</Text>
+            <Text>{userData?.email}</Text>
           </View>
         </View>
       </View>
