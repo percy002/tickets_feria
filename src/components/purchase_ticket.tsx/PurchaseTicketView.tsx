@@ -3,7 +3,7 @@ import { Alert, Checkbox, Label, List } from "flowbite-react";
 import { HiInformationCircle } from "react-icons/hi";
 import ButtonFB from "../UI/ButtonFB";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState } from "@/contexts/GlobalStateContext";
 
 const PurchaseTicketView = () => {
@@ -12,10 +12,7 @@ const PurchaseTicketView = () => {
   const { generalTickets, setGeneralTickets } = useGlobalState();
   const {starTickets, setStarTickets} = useGlobalState();
 
-  const incrementGeneralTickets = () => {
-    
-    const savedCart = localStorage.getItem('generaTickets');
-    
+  const incrementGeneralTickets = () => { 
     if (generalTickets < 10) {
       setGeneralTickets(generalTickets + 1);
     }
@@ -35,6 +32,14 @@ const PurchaseTicketView = () => {
       setStarTickets(starTickets - 1);
     }
   };
+
+  
+
+  useEffect(() => {
+    localStorage.setItem("generalTickets", generalTickets.toString());
+    localStorage.setItem("starTickets", starTickets.toString());
+  }, [generalTickets, starTickets]);
+
   return (
     <div className="flex flex-col gap-8">
       <Alert color="failure">

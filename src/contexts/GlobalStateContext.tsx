@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 export interface UserData {
   name?: string;
@@ -23,13 +29,14 @@ const initialState: State = {
   starTickets: 0,
   setStarTickets: () => {},
   userData: {
-    name: 'Juan',
-    lastName: 'Perez',
-    email: 'juan.perez@gmail.com',
-    emailConfirm: 'juan.perez@gmail.com',
-    dni: '12345678',
-    phone: '933669933',
-  },  setUserData: () => {},
+    name: "Juan",
+    lastName: "Perez",
+    email: "juan.perez@gmail.com",
+    emailConfirm: "juan.perez@gmail.com",
+    dni: "12345678",
+    phone: "933669933",
+  },
+  setUserData: () => {},
 };
 
 const GlobalStateContext = createContext<State>(initialState);
@@ -45,8 +52,29 @@ export const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
   const [starTickets, setStarTickets] = useState<number>(0);
   const [userData, setUserData] = useState<UserData>(initialState.userData);
 
+  useEffect(() => {
+    const generalTickets = localStorage.getItem("generalTickets");
+    const starTickets = localStorage.getItem("starTickets");
+    
+    if (generalTickets) {
+      setGeneralTickets(parseInt(generalTickets));
+    }
+    if (starTickets) {
+      setStarTickets(parseInt(starTickets));
+    }
+  }, []);
+
   return (
-    <GlobalStateContext.Provider value={{ generalTickets, setGeneralTickets, starTickets, setStarTickets, userData, setUserData }}>
+    <GlobalStateContext.Provider
+      value={{
+        generalTickets,
+        setGeneralTickets,
+        starTickets,
+        setStarTickets,
+        userData,
+        setUserData,
+      }}
+    >
       {children}
     </GlobalStateContext.Provider>
   );

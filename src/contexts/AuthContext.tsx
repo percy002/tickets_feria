@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import React, { createContext, useState, useEffect } from "react";
 function createEmptyUser(): User {
   return {
@@ -37,10 +38,9 @@ export const AuthContext = React.createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const Router = useRouter();
 
   useEffect(() => {
-    console.log('hola');
-    
     const validateToken = async () => {
       console.log('validte token');
       
@@ -59,21 +59,11 @@ export const AuthProvider = ({ children }: any) => {
               },
             }
           );
-          const data = await response.json();
-          // const response = await axios.get<User>(
-          //   "http://localhost:8000/api/user",
-          //   {
-          //     headers: {
-          //       Authorization: `Bearer ${token}`,
-          //     },
-          //   }
-          // );
-          console.log(data.user);
-          
+          const data = await response.json();          
           setUser(data.user);
         } catch (error) {
           console.error("Error de validación del token", error);
-          // sessionStorage.removeItem("access_token");
+          sessionStorage.removeItem("access_token");
         }
       }
       setLoading(false);
@@ -92,6 +82,7 @@ export const AuthProvider = ({ children }: any) => {
   const logout = () => {
     sessionStorage.removeItem("access_token");
     setUser(createEmptyUser());
+    Router.push("/");
   };
 
   return (
