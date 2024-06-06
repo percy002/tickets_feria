@@ -42,11 +42,7 @@ export const AuthProvider = ({ children }: any) => {
 
   useEffect(() => {
     const validateToken = async () => {
-      console.log('validte token');
-      
       const token = sessionStorage.getItem("access_token");
-
-      console.log(token);
       
       if (token) {
         try {

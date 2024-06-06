@@ -39,6 +39,8 @@ export default function FormLogin() {
       const data = await response.json();
   
       if (!response.ok) {
+        console.log(data.errors);
+        
         const errors = Object.values(data.errors).flat().join("\n");
         console.log(errors);
 
@@ -53,10 +55,9 @@ export default function FormLogin() {
         title: "Bienvenido",
         text: "Iniciaste sesión correctamente",
         icon: "success",
-        // timer: 1000,
-        showConfirmButton: true,
+        timer: 1000,
+        showConfirmButton: false,
       }).then(() => {
-        console.log(user);
         router.push("/comprar_boleto");
       });
     } catch (error: any) {

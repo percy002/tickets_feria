@@ -2,23 +2,37 @@
 
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
-import Image from "next/image";
-import Link from "next/link";
 export default function ModalFB() {
   const [openModal, setOpenModal] = useState(false);
   const [yapeData, setYapeData] = useState();
+  const Router = useRouter();
 
-  //   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     yapeData({
-  //       ...userData,
-  //       [event.target.id]: event.target.value,
-  //     });
-  //   };
+  const pagarYape = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/yape`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(yapeData),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);        
+      }
+
+      setOpenModal(false);
+      Router.push("/boleto");
+    } catch (error) {}
+  };
   const handleClickYape = () => {
-    setOpenModal(false);
-    // redirect('/boleto')
+    pagarYape();
   };
   return (
     <>
@@ -67,14 +81,12 @@ export default function ModalFB() {
           </div>
         </Modal.Body>
         <Modal.Footer className="justify-center">
-          <Link href={"/boleto"}>
-            <Button
-              onClick={() => setOpenModal(false)}
-              className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full"
-            >
-              <span className="text-2xl">YAPEAR</span>
-            </Button>
-          </Link>
+          <Button
+            onClick={handleClickYape}
+            className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full"
+          >
+            <span className="text-2xl">YAPEAR</span>
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
