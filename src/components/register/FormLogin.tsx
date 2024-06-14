@@ -7,7 +7,8 @@ import { useState,useContext } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthContext";
-export default function FormLogin() {
+import withGuest from "@/hoc/withGuess";
+function FormLogin() {
   const router = useRouter();
 
   const authContext = useContext(AuthContext);
@@ -49,7 +50,6 @@ export default function FormLogin() {
       sessionStorage.setItem('access_token', data.token);
       sessionStorage.setItem('token_type', data.token_type);
       setUser(data.user);
-      console.log(user);
       
       Swal.fire({
         title: "Bienvenido",
@@ -148,3 +148,5 @@ export default function FormLogin() {
     </div>
   );
 }
+
+export default withGuest(FormLogin);

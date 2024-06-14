@@ -3,9 +3,22 @@
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import ButtonFB from "../UI/ButtonFB";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2";
-export default function FormRegister() {
+import { AuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import withGuest from "@/hoc/withGuess";
+function FormRegister() {
+  const router = useRouter();
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    router.replace("/");
+    return;
+    // throw new Error("AuthContext is undefined");
+  }
+
+  const { user, setUser, loading } = authContext;
   const [formData, setFormData] = useState({
     nombres: "",
     apellido_paterno: "",
@@ -17,8 +30,6 @@ export default function FormRegister() {
     password: "",
     password_confirmation: "",
   });
-
-  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
@@ -63,7 +74,7 @@ export default function FormRegister() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log(JSON.stringify(formData));
     e.preventDefault();
-    
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/register`,
@@ -85,12 +96,18 @@ export default function FormRegister() {
         throw new Error(errors || "¡Algo salió mal!");
       }
 
+      sessionStorage.setItem("access_token", data.token);
+      sessionStorage.setItem("token_type", data.token_type);
+      setUser(data.user);
+
       Swal.fire({
         icon: "success",
         title: "¡Registro exitoso!",
         text: "Por favor, inicie sesión para continuar",
+      }).then(() => {
+        router.push("/comprar_boleto");
       });
-    } catch (error: any) {     
+    } catch (error: any) {
       const message =
         error instanceof Error
           ? error.message
@@ -213,3 +230,5 @@ export default function FormRegister() {
     </form>
   );
 }
+
+export default withGuest(FormRegister);

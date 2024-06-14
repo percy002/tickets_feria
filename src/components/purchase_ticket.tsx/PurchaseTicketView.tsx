@@ -1,18 +1,20 @@
 "use client";
-import { Alert, Checkbox, Label, List } from "flowbite-react";
+import { Alert, Button, Checkbox, Label, List } from "flowbite-react";
 import { HiInformationCircle } from "react-icons/hi";
 import ButtonFB from "../UI/ButtonFB";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "@/contexts/GlobalStateContext";
-
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 const PurchaseTicketView = () => {
   // const [generalTicketTotal, setGeneralTicketTotal] = useState(0);
   // const [presentationTicketTotal, setPresentationTicketTotal] = useState(0);
   const { generalTickets, setGeneralTickets } = useGlobalState();
-  const {starTickets, setStarTickets} = useGlobalState();
+  const { starTickets, setStarTickets } = useGlobalState();
+  const Router = useRouter();
 
-  const incrementGeneralTickets = () => { 
+  const incrementGeneralTickets = () => {
     if (generalTickets < 10) {
       setGeneralTickets(generalTickets + 1);
     }
@@ -33,13 +35,24 @@ const PurchaseTicketView = () => {
     }
   };
 
-  
-
   useEffect(() => {
     localStorage.setItem("generalTickets", generalTickets.toString());
     localStorage.setItem("starTickets", starTickets.toString());
   }, [generalTickets, starTickets]);
 
+  const handleClickContinuar = () => {
+    if (generalTickets + starTickets > 0) {
+      Router.push("/info_usuario");
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "Seleccione al menos una entrada",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+  };
   return (
     <div className="flex flex-col gap-8">
       <Alert color="failure">
@@ -81,8 +94,9 @@ const PurchaseTicketView = () => {
         </div>
       </div>
       <div className="flex justify-end">
-        <span className="font-bold text-xl">Total : S/. {generalTickets * 10 + starTickets * 30}</span>
-        
+        <span className="font-bold text-xl">
+          Total : S/. {generalTickets * 10 + starTickets * 30}
+        </span>
       </div>
       <div className="flex items-center gap-2">
         <Checkbox id="promotion" />
@@ -90,9 +104,12 @@ const PurchaseTicketView = () => {
           Acepto los términos y condiciones del servicio
         </Label>
       </div>
-      <Link href="/info_usuario" className="flex justify-center">
-        <ButtonFB text={"Continuar"} />
-      </Link>
+      <Button
+       onClick={handleClickContinuar}
+        className={`bg-primary rounded-3xl enabled:hover:bg-primary w-full`}
+      >
+        <span className="font-bold text-xl">Continuar</span>
+      </Button>
     </div>
   );
 };

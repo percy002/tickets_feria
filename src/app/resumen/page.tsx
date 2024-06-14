@@ -17,10 +17,11 @@ const Page = () => {
     // throw new Error("AuthContext is undefined");
   }
   const { user, setUser } = authContext;
-  const { generalTickets, starTickets } = useGlobalState();
+  const { generalTickets, starTickets, setStarTickets, setGeneralTickets } = useGlobalState();
 
   const pagarYape = async () => {
     const token = sessionStorage.getItem("access_token");
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/v1/pagar`,
@@ -30,20 +31,33 @@ const Page = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({...user,generalTickets,starTickets}),
+          body: JSON.stringify({ ...user, generalTickets, starTickets }),
         }
       );
 
       const data = await response.json();
       console.log(data);
       if (!response.ok) {
-        throw new Error(data.errors);        
+        throw new Error(data.errors);
       }
 
-      
-      // Router.push("/boleto");
+      localStorage.setItem("generalTickets", '0');
+      localStorage.setItem("starTickets", '0');
+      setGeneralTickets(0);
+      setStarTickets(0);
+      Swal.fire({
+        title: "Pago exitoso",
+        text: "¡Gracias por su compra!",
+        icon: "success",
+        timer: 1000,
+        showConfirmButton: false,
+      }).then(() => {
+        
+        Router.push("/boleto");
+      });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "¡Algo salió mal!";
+      const message =
+        error instanceof Error ? error.message : "¡Algo salió mal!";
       Swal.fire({
         title: "Error",
         text: message,
@@ -140,8 +154,10 @@ const Page = () => {
             </span>
           </div>
           <div className="flex justify-center">
-            
-            <Button onClick={handlePagar} className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full">
+            <Button
+              onClick={handlePagar}
+              className="bg-primary text-white enabled:hover:bg-primary w-full rounded-full"
+            >
               <span className="text-2xl">Pagar</span>
             </Button>
             {/* <ModalFB /> */}

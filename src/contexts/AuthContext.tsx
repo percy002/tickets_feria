@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: any) => {
 
   const logout = () => {
     sessionStorage.removeItem("access_token");
-    setUser(createEmptyUser());
+    setUser(null);
     Router.push("/");
   };
 

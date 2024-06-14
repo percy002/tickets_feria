@@ -26,6 +26,9 @@ const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
       if (!loading && !user) {
         Router.replace('/error_inicio');
       }
+      // if (!loading && user) {
+        
+      // }
     }, [user, loading]);
 
     if (loading) {

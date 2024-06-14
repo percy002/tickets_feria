@@ -4,7 +4,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { useGlobalState } from "@/contexts/GlobalStateContext";
 import { Button, Dropdown, Navbar, Popover } from "flowbite-react";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { HiChevronDown, HiShoppingCart } from "react-icons/hi";
 
@@ -23,9 +23,8 @@ const NavbarCustomTheme = {
   },
 };
 
-const handleCerrarSesion = () => {};
-
 const NavbarFB = () => {
+  const [islogin, setIslogin] = useState(false);
   const authContext = useContext(AuthContext);
   if (!authContext) {
     return;
@@ -33,12 +32,29 @@ const NavbarFB = () => {
   }
   const { user, loading, logout } = authContext;
   const { starTickets, generalTickets } = useGlobalState();
+
+  useEffect(() => {
+    console.log(user);
+
+    if (!user && !loading) {
+      logout();
+      setIslogin(false);
+    }
+    if (user && !loading) {
+      setIslogin(true);
+    }
+    console.log("login", islogin);
+  }, [user, loading]);
   return (
-    <Navbar fluid className="bg-primary md:px-16 fixed w-full" theme={NavbarCustomTheme}>
+    <Navbar
+      fluid
+      className="bg-primary md:px-16 fixed w-full z-50"
+      theme={NavbarCustomTheme}
+    >
       <Navbar.Brand as={Link} href="https://flowbite-react.com"></Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-center">
-        {!user && !loading && (
+        {!islogin && (
           <>
             <Navbar.Link
               as={Link}
@@ -72,13 +88,11 @@ const NavbarFB = () => {
         <Navbar.Link className="cursor-pointer relative" as={"div"}>
           <div className="relative">
             <HiShoppingCart className="h-8 w-8 text-white" />
-            {
-              generalTickets + starTickets > 0 && (
-                <span className="text-primary font-bold bg-white rounded-full px-1 absolute -bottom-2 -right-2 w-6 h-6 inline-flex justify-center items-center">
-                  {starTickets + generalTickets}
-                </span>
-              )
-            }
+            {generalTickets + starTickets > 0 && (
+              <span className="text-primary font-bold bg-white rounded-full px-1 absolute -bottom-2 -right-2 w-6 h-6 inline-flex justify-center items-center">
+                {starTickets + generalTickets}
+              </span>
+            )}
           </div>
         </Navbar.Link>
 
@@ -95,6 +109,9 @@ const NavbarFB = () => {
                 </span>
               }
             >
+              <Dropdown.Item>
+                <Link href="/mis_compras">Ver mis compras</Link>
+              </Dropdown.Item>
               <Dropdown.Item onClick={logout}>Cerrar Sesión</Dropdown.Item>
             </Dropdown>
           </>
