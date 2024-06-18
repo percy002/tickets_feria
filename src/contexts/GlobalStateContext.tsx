@@ -20,6 +20,8 @@ interface State {
   starTickets: number;
   setStarTickets: React.Dispatch<React.SetStateAction<number>>;
   userData: UserData;
+  venta_id: string;
+  setVenta_id: React.Dispatch<React.SetStateAction<string>>;
   setUserData: React.Dispatch<React.SetStateAction<object>>;
 }
 
@@ -28,6 +30,8 @@ const initialState: State = {
   setGeneralTickets: () => {},
   starTickets: 0,
   setStarTickets: () => {},
+  venta_id: "",
+  setVenta_id: () => {},
   userData: {
     name: "Juan",
     lastName: "Perez",
@@ -51,6 +55,7 @@ export const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
   const [generalTickets, setGeneralTickets] = useState<number>(0);
   const [starTickets, setStarTickets] = useState<number>(0);
   const [userData, setUserData] = useState<UserData>(initialState.userData);
+  const [venta_id, setVenta_id] = useState<string>("");
 
   useEffect(() => {
     const generalTickets = localStorage.getItem("generalTickets");
@@ -71,6 +76,8 @@ export const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
         setGeneralTickets,
         starTickets,
         setStarTickets,
+        venta_id,
+        setVenta_id,
         userData,
         setUserData,
       }}

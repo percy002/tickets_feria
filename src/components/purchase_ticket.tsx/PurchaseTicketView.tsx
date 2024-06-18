@@ -53,6 +53,7 @@ const PurchaseTicketView = () => {
       });
     }
   };
+  const currentHour = new Date().getHours();
   return (
     <div className="flex flex-col gap-8">
       <Alert color="failure">
@@ -67,31 +68,35 @@ const PurchaseTicketView = () => {
       </Alert>
       <div className="px-8 py-4 rounded-md bg-primary bg-opacity-20">
         <h5 className="text-primary font-bold text-xl">Entradas</h5>
-        <div className="flex flex-col mt-6">
-          <span className="font-bold text-xl">General</span>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600 font-bold">s/. 10.00</span>
-            <div className="flex gap-8 bg-white border border-black rounded-2xl px-8 text-2xl font-bold">
-              <button onClick={decrementGeneralTickets}>-</button>
-              <span>{generalTickets}</span>
-              <button onClick={incrementGeneralTickets}>+</button>
+        {currentHour < 13 && (
+          <div className="flex flex-col mt-6">
+            <span className="font-bold text-xl">General</span>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 font-bold">s/. 10.00</span>
+              <div className="flex gap-8 bg-white border border-black rounded-2xl px-8 text-2xl font-bold">
+                <button onClick={decrementGeneralTickets}>-</button>
+                <span>{generalTickets}</span>
+                <button onClick={incrementGeneralTickets}>+</button>
+              </div>
+            </div>
+            <span className="text-gray-600 font-bold">
+              *Entrada valida para horario de 9:00a.m. a 13.00p.m.
+            </span>
+          </div>
+        )}
+        {currentHour >= 13 && (
+          <div className="flex flex-col mt-8">
+            <span className="font-bold text-xl">General - Presentación</span>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 font-bold">s/. 30.00</span>
+              <div className="flex gap-8 bg-white border border-black rounded-2xl px-8 text-2xl font-bold">
+                <button onClick={decrementPresentationTickets}>-</button>
+                <span>{starTickets}</span>
+                <button onClick={incrementPresentationTickets}>+</button>
+              </div>
             </div>
           </div>
-          <span className="text-gray-600 font-bold">
-            *Entrada valida para horario de 9:00a.m. a 13.00p.m.
-          </span>
-        </div>
-        <div className="flex flex-col mt-8">
-          <span className="font-bold text-xl">General - Presentación</span>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600 font-bold">s/. 30.00</span>
-            <div className="flex gap-8 bg-white border border-black rounded-2xl px-8 text-2xl font-bold">
-              <button onClick={decrementPresentationTickets}>-</button>
-              <span>{starTickets}</span>
-              <button onClick={incrementPresentationTickets}>+</button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
       <div className="flex justify-end">
         <span className="font-bold text-xl">
@@ -105,7 +110,8 @@ const PurchaseTicketView = () => {
         </Label>
       </div>
       <Button
-       onClick={handleClickContinuar}
+        disabled = {generalTickets + starTickets === 0}
+        onClick={handleClickContinuar}
         className={`bg-primary rounded-3xl enabled:hover:bg-primary w-full`}
       >
         <span className="font-bold text-xl">Continuar</span>

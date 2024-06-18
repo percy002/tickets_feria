@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { HiChevronDown, HiShoppingCart } from "react-icons/hi";
+import { useRouter } from "next/navigation";
 
 const NavbarCustomTheme = {
   collapse: {
@@ -25,6 +26,7 @@ const NavbarCustomTheme = {
 
 const NavbarFB = () => {
   const [islogin, setIslogin] = useState(false);
+  const Router = useRouter();
   const authContext = useContext(AuthContext);
   if (!authContext) {
     return;
@@ -34,7 +36,6 @@ const NavbarFB = () => {
   const { starTickets, generalTickets } = useGlobalState();
 
   useEffect(() => {
-    console.log(user);
 
     if (!user && !loading) {
       logout();
@@ -43,7 +44,6 @@ const NavbarFB = () => {
     if (user && !loading) {
       setIslogin(true);
     }
-    console.log("login", islogin);
   }, [user, loading]);
   return (
     <Navbar
@@ -86,7 +86,7 @@ const NavbarFB = () => {
           </>
         )}
         <Navbar.Link className="cursor-pointer relative" as={"div"}>
-          <div className="relative">
+          <div className="relative" onClick={() => {generalTickets + starTickets > 0 && Router.push('resumen')}}>
             <HiShoppingCart className="h-8 w-8 text-white" />
             {generalTickets + starTickets > 0 && (
               <span className="text-primary font-bold bg-white rounded-full px-1 absolute -bottom-2 -right-2 w-6 h-6 inline-flex justify-center items-center">

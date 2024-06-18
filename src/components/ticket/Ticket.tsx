@@ -7,6 +7,16 @@ import ModalTicket from "./ModalTicket";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthContext";
+import QRCode from "qrcode";
+
+interface GetTicket {
+  ticket_id: string;
+  tipo_ticket_id: string;
+  cantidad: string;
+  precio: string;
+  fecha: string;
+  QR_ticket?: string;
+}
 
 const Ticket = () => {
   const Router = useRouter();
@@ -17,14 +27,80 @@ const Ticket = () => {
     // throw new Error("AuthContext is undefined");
   }
   const { user, setUser } = authContext;
-  
-  const { userData, generalTickets, starTickets } = useGlobalState();
-  const [isClient, setIsClient] = useState(false);
+  const [qrCode, setQrCode] = useState<string | null>(null);
 
+  const { userData, generalTickets, starTickets, venta_id } = useGlobalState();
+  const [isClient, setIsClient] = useState(false);
+  const [ticket, setTicket] = useState<GetTicket>({
+    ticket_id: "",
+    tipo_ticket_id: "",
+    cantidad: "",
+    precio: "",
+    fecha: "",
+  });
+
+  const getVentaById = async () => {
+    const token = sessionStorage.getItem("access_token");
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/v1/venta/${venta_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      Router.replace("/");
+    }
+    console.log(data);
+
+    setTicket(data?.venta.tickets[0]);
+  };
+  const getVenta = async () => {
+    const token = sessionStorage.getItem("access_token");
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_VENTA_BOLETOS_API_URL}/api/v1/ventas/${user?.usuario_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      Router.replace("/");
+    }
+    console.log(data);
+
+    setTicket(data?.ventas[0].tickets[0]);
+  };
   useEffect(() => {
+    // console.log(user);
+    if (venta_id) {
+      getVentaById();
+    } else {
+      getVenta();
+    }
+    console.log("ticket", ticket);
+
     setIsClient(true);
   }, []);
-
+  useEffect(() => {
+    if (ticket.QR_ticket) {
+      QRCode.toDataURL(ticket.QR_ticket?.toString() || "")
+        .then((url: any) => {
+          setQrCode(url);
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+    }
+  }, [ticket]);
   return (
     <div className="w-full">
       <div className="flex flex-col items-center">
@@ -33,7 +109,7 @@ const Ticket = () => {
           alt=""
           className="w-1/2"
         />
-        <img src="/images/QR.jpg" alt="" className="w-1/2" />
+        {qrCode && <img src={qrCode} alt="QR Code" className="w-1/2" />}
       </div>
       <div className="flex flex-col items-center">
         <div className="flex justify-center">
@@ -57,7 +133,9 @@ const Ticket = () => {
             </div>
             <div className="flex-1 flex flex-col gap-2">
               <h6>Apellidos</h6>
-              <span className="font-bold">{user?.apellido_paterno} {user?.apellido_materno}</span>
+              <span className="font-bold">
+                {user?.apellido_paterno} {user?.apellido_materno}
+              </span>
             </div>
             <div className="flex-1 flex flex-col gap-2">
               <h6>Dni</h6>
@@ -81,40 +159,28 @@ const Ticket = () => {
             <div className="flex-1 flex flex-col gap-2">
               <h6>Descripción</h6>
               <span className="font-bold text-sm">
-                {generalTickets > 0 && "Entrada General"}
+                {ticket?.tipo_ticket_id == "1" && "Entrada General"}
               </span>
               <span className="font-bold text-sm">
-                {starTickets > 0 && "Entrada Estelar"}
+                {ticket?.tipo_ticket_id == "2" && "Entrada Estelar"}
               </span>
             </div>
             <div className="flex-1 flex flex-col gap-2">
-              <h6>Precio Unit.</h6>
-              <span className="font-bold">
-                {generalTickets > 0 && "S/. 10.00"}
+              <h6 className="text-right">Precio Unit.</h6>
+              <span className="font-bold text-right">
+                {ticket?.tipo_ticket_id == "1" && "S/. 10.00"}
               </span>
-              <span className="font-bold">
-                {starTickets > 0 && "S/. 30.00"}
-              </span>
-            </div>
-            <div className="flex-1 flex flex-col gap-2">
-              <h6>Cantidad</h6>
-              <span className="font-bold">
-                {generalTickets > 0 && generalTickets}
-              </span>
-              <span className="font-bold">
-                {starTickets > 0 && starTickets}
+              <span className="font-bold text-right">
+                {ticket?.tipo_ticket_id == "2" && "S/. 30.00"}
               </span>
             </div>
             <div className="flex-1 flex flex-col gap-2">
-              <h6>Total</h6>
-              <span className="font-bold">
-                {" "}
-                {generalTickets > 0 && `S/. ${generalTickets * 10}.00`}
-              </span>
-              <span className="font-bold">
-                {" "}
-                {starTickets > 0 && `S/. ${starTickets * 30}.00`}
-              </span>
+              <h6 className="text-right">Cantidad</h6>
+              <span className="font-bold text-right">{ticket?.cantidad}</span>
+            </div>
+            <div className="flex-1 flex flex-col gap-2">
+              <h6 className="text-right">Total</h6>
+              <span className="font-bold text-right">{ticket?.precio}</span>
             </div>
           </div>
         </div>
@@ -132,8 +198,9 @@ const Ticket = () => {
             document={
               <TicketPDF
                 userData={user}
-                generalTickets={generalTickets}
-                startTickets={starTickets}
+                tickets={parseInt(ticket.cantidad)}
+                tipoTicket={ticket.tipo_ticket_id}
+                qr={ticket.QR_ticket || ""}
               />
             }
             fileName="ticket.pdf"
